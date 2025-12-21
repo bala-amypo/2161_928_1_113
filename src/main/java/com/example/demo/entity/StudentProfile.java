@@ -2,8 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "student_profiles")
@@ -30,5 +30,15 @@ public class StudentProfile {
 
     public StudentProfile() {}
 
-    // getters & setters
+    public Long getId() {
+        return id;
+    }
+
+    public Boolean getRepeatOffender() {
+        return repeatOffender;
+    }
+
+    public void setRepeatOffender(Boolean repeatOffender) {
+        this.repeatOffender = repeatOffender;
+    }
 }
