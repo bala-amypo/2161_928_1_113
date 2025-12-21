@@ -14,9 +14,16 @@ public class Role {
     private String name;
 
     public Role() {}
+
     public Role(String name) {
         this.name = name;
     }
 
-    // getters & setters
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
