@@ -28,7 +28,6 @@ public class StudentProfileServiceImpl implements StudentProfileService {
 
     @Override
     public StudentProfile updateRepeatStatus(Long id, boolean repeatOffender) {
-
         StudentProfile student = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
