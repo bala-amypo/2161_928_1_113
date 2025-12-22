@@ -18,28 +18,32 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(AppUserRepository userRepository,
-                           RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(
+            AppUserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void register(RegisterRequest req) {
+    public void register(RegisterRequest request) {
 
-        if (userRepository.existsByEmail(req.getEmail())) {
+        // 🔴 CHECK: duplicate email
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
 
-        Role role = roleRepository.findByName(req.getRole())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        // 🔴 CHECK: role exists
+        Role role = roleRepository.findByName(request.getRole())
+                .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRole()));
 
         AppUser user = new AppUser();
-        user.setFullName(req.getFullName());
-        user.setEmail(req.getEmail());
-        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(role);
 
         userRepository.save(user);
@@ -47,20 +51,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtResponse login(LoginRequest request) {
-
-        AppUser user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // JWT disabled for now — return dummy response
-        return new JwtResponse(
-                "LOGIN_SUCCESS",
-                user.getId(),
-                user.getEmail(),
-                user.getRole().getName()
-        );
+        throw new UnsupportedOperationException("Login not implemented yet");
     }
 }
