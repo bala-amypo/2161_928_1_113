@@ -1,11 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.ApiResponse;
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")   // 🔥 FIXES SWAGGER CORS
 public class AuthController {
 
     private final AuthService authService;
