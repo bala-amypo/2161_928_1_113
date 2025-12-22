@@ -1,14 +1,20 @@
-package com.example.demo.security;
-
-import org.springframework.stereotype.Component;
-
-@Component
-public class JwtTokenProvider {
-
-    public String generateToken(Object authentication,
-                                Long userId,
-                                String email,
-                                String role) {
-        return "dummy-jwt-token";
+public boolean validateToken(String token) {
+    try {
+        Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token);
+        return true;
+    } catch (Exception e) {
+        return false;
     }
+}
+
+public String getEmailFromToken(String token) {
+    return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .getSubject();
 }
