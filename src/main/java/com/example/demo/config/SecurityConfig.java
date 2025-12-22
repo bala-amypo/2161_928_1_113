@@ -21,6 +21,7 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> {}) // 🔥 REQUIRED FOR SWAGGER + HTTPS PROXY
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
             );
