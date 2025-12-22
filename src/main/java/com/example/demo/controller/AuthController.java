@@ -15,13 +15,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ApiResponse register(@RequestBody RegisterRequest req) {
-        authService.register(req);
-        return new ApiResponse(true, "Registered");
+    public ApiResponse register(@RequestBody RegisterRequest request) {
+        authService.register(request);
+        return new ApiResponse(true, "User registered successfully");
     }
 
     @PostMapping("/login")
-    public JwtResponse login(@RequestBody LoginRequest req) {
-        return authService.login(req);
+    public JwtResponse login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }

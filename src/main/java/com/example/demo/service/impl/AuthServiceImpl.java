@@ -1,12 +1,8 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.JwtResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.AppUser;
-import com.example.demo.entity.Role;
-import com.example.demo.repository.AppUserRepository;
-import com.example.demo.repository.RoleRepository;
+import com.example.demo.dto.*;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,26 +35,25 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void register(RegisterRequest req) {
 
-        // 1️⃣ Email check
+        // Email already exists check
         if (userRepo.existsByEmail(req.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new RuntimeException("Email already exists");
         }
 
-        // 2️⃣ FIXED ROLE MAPPING (🔥 THIS FIXES 500)
-        Role role = roleRepo.findByName("ROLE_" + req.getRole())
-                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+        // Convert role safely
+        String roleName = "ROLE_" + req.getRole().toUpperCase();
 
-        // 3️⃣ Create user
+        Role role = roleRepo.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
+
+        // Create user
         AppUser user = new AppUser(
                 req.getFullName(),
                 req.getEmail(),
                 encoder.encode(req.getPassword())
         );
 
-        // 4️⃣ Assign role
         user.getRoles().add(role);
-
-        // 5️⃣ Save
         userRepo.save(user);
     }
 
@@ -66,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponse login(LoginRequest req) {
 
-        // 1️⃣ Authenticate
+        // Authenticate user
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         req.getEmail(),
@@ -74,14 +69,12 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        // 2️⃣ Load user
+        // Fetch user
         AppUser user = userRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 3️⃣ Get role
         String role = user.getRoles().iterator().next().getName();
 
-        // 4️⃣ Generate JWT
         String token = jwtProvider.generateToken(
                 null,
                 user.getId(),
@@ -89,7 +82,6 @@ public class AuthServiceImpl implements AuthService {
                 role
         );
 
-        // 5️⃣ Response
         return new JwtResponse(
                 token,
                 user.getId(),
