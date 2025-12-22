@@ -1,44 +1,32 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "student_profiles")
 public class StudentProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String studentId;
-    private String name;
-    private String email;
-    private String program;
-
-    @Column(nullable = false)
-    private Integer yearLevel;
-
-    private Boolean repeatOffender = false;
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "studentProfile", cascade = CascadeType.ALL)
-    private List<IntegrityCase> integrityCases = new ArrayList<>();
-
-    public StudentProfile() {}
+    private boolean repeatOffender;
 
     public Long getId() {
         return id;
     }
 
-    public Boolean getRepeatOffender() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean isRepeatOffender() {
         return repeatOffender;
     }
 
-    public void setRepeatOffender(Boolean repeatOffender) {
+    public void setRepeatOffender(boolean repeatOffender) {
         this.repeatOffender = repeatOffender;
     }
 }
