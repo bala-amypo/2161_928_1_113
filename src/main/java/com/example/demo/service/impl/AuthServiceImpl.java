@@ -1,56 +1,53 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.JwtResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.AppUser;
-import com.example.demo.entity.Role;
-import com.example.demo.repository.AppUserRepository;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.service.AuthService;
+import com.example.demo.dto.*;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
+import com.example.demo.security.JwtTokenProvider;
+import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-@Service
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl {
 
-    private final AppUserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AppUserRepository userRepo;
+    private final RoleRepository roleRepo;
+    private final PasswordEncoder encoder;
+    private final AuthenticationManager authManager;
+    private final JwtTokenProvider jwt;
 
-    public AuthServiceImpl(
-            AppUserRepository userRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+    public AuthServiceImpl(AppUserRepository u, RoleRepository r,
+                           PasswordEncoder e, AuthenticationManager a,
+                           JwtTokenProvider j) {
+        userRepo = u; roleRepo = r; encoder = e; authManager = a; jwt = j;
     }
 
-    @Override
-    public void register(RegisterRequest request) {
+    public void register(RegisterRequest req) {
+        if (userRepo.existsByEmail(req.getEmail()))
+            throw new IllegalArgumentException("Duplicate");
 
-        // 🔴 CHECK: duplicate email
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already registered");
-        }
-
-        // 🔴 CHECK: role exists
-        Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRole()));
+        Role role = roleRepo.findByName(req.getRole())
+                .orElseThrow(() -> new IllegalArgumentException("Role"));
 
         AppUser user = new AppUser();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(role);
+        user.setEmail(req.getEmail());
+        user.setFullName(req.getFullName());
+        user.setPassword(encoder.encode(req.getPassword()));
+        user.getRoles().add(role);
 
-        userRepository.save(user);
+        userRepo.save(user);
     }
 
-    @Override
-    public JwtResponse login(LoginRequest request) {
-        throw new UnsupportedOperationException("Login not implemented yet");
+    public JwtResponse login(LoginRequest req) {
+        Authentication auth = authManager.authenticate(
+            new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
+        );
+
+        AppUser user = userRepo.findByEmail(req.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String role = user.getRoles().iterator().next().getName();
+        String token = jwt.generateToken(auth, user.getId(), user.getEmail(), role);
+
+        return new JwtResponse(token, user.getId(), user.getEmail(), role);
     }
 }
