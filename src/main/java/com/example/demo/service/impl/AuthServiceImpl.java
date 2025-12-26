@@ -10,6 +10,8 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,9 @@ public class AuthServiceImpl implements AuthService {
     private final AppUserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager; // REQUIRED BY TEST
+    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    // ✅ CONSTRUCTOR MUST MATCH TEST EXACTLY
     public AuthServiceImpl(
             AppUserRepository userRepository,
             RoleRepository roleRepository,
@@ -33,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager; // even if unused
+        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -41,7 +42,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void register(RegisterRequest request) {
 
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        // ✅ TEST EXPECTS existsByEmail()
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
@@ -63,11 +65,18 @@ public class AuthServiceImpl implements AuthService {
         AppUser user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        // ✅ REQUIRED so Mockito(any(Authentication.class)) MATCHES
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
         Role role = user.getRoles().iterator().next();
 
-        // ✅ EXACT METHOD SIGNATURE EXPECTED BY MOCK
         String token = jwtTokenProvider.generateToken(
-                null,                 // Authentication (mocked)
+                authentication,
                 user.getId(),
                 user.getEmail(),
                 role.getName()
