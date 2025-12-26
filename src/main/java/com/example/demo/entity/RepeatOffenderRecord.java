@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "repeat_offender_records")
 public class RepeatOffenderRecord {
 
     @Id
@@ -18,9 +19,19 @@ public class RepeatOffenderRecord {
     private String flagSeverity;
 
     // getters & setters
+    public StudentProfile getStudentProfile() { return studentProfile; }
     public Integer getTotalCases() { return totalCases; }
     public String getFlagSeverity() { return flagSeverity; }
-    public void setStudentProfile(StudentProfile s) { this.studentProfile = s; }
-    public void setTotalCases(Integer totalCases) { this.totalCases = totalCases; }
-    public void setFlagSeverity(String flagSeverity) { this.flagSeverity = flagSeverity; }
+
+    public void setStudentProfile(StudentProfile studentProfile) {
+        this.studentProfile = studentProfile;
+    }
+
+    public void setTotalCases(Integer totalCases) {
+        this.totalCases = totalCases;
+    }
+
+    public void setFlagSeverity(String flagSeverity) {
+        this.flagSeverity = flagSeverity;
+    }
 }

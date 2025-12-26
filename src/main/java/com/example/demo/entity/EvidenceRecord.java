@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "evidence_records")
 public class EvidenceRecord {
 
     @Id
@@ -16,9 +17,14 @@ public class EvidenceRecord {
     private String evidenceType;
     private String content;
     private String submittedBy;
+
     private LocalDateTime submittedAt = LocalDateTime.now();
 
+    // getters & setters
     public IntegrityCase getIntegrityCase() { return integrityCase; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setIntegrityCase(IntegrityCase c) { this.integrityCase = c; }
+
+    public void setIntegrityCase(IntegrityCase integrityCase) {
+        this.integrityCase = integrityCase;
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "penalty_actions")
 public class PenaltyAction {
 
     @Id
@@ -16,9 +17,14 @@ public class PenaltyAction {
     private String penaltyType;
     private String details;
     private String issuedBy;
+
     private LocalDateTime issuedAt = LocalDateTime.now();
 
+    // getters & setters
     public IntegrityCase getIntegrityCase() { return integrityCase; }
     public LocalDateTime getIssuedAt() { return issuedAt; }
-    public void setIntegrityCase(IntegrityCase c) { this.integrityCase = c; }
+
+    public void setIntegrityCase(IntegrityCase integrityCase) {
+        this.integrityCase = integrityCase;
+    }
 }

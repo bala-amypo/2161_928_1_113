@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "student_profiles")
 public class StudentProfile {
 
     @Id
@@ -17,7 +18,9 @@ public class StudentProfile {
     private String email;
     private String program;
     private Integer yearLevel;
+
     private Boolean repeatOffender = false;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "studentProfile")
@@ -28,6 +31,7 @@ public class StudentProfile {
     public String getStudentId() { return studentId; }
     public Boolean getRepeatOffender() { return repeatOffender; }
     public Integer getYearLevel() { return yearLevel; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
     public List<IntegrityCase> getIntegrityCases() { return integrityCases; }
 
     public void setId(Long id) { this.id = id; }

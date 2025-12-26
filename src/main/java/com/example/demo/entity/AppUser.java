@@ -14,9 +14,14 @@ public class AppUser {
     private Long id;
 
     private String fullName;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+
     private Boolean enabled = true;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -33,6 +38,7 @@ public class AppUser {
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public Boolean getEnabled() { return enabled; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
     public Set<Role> getRoles() { return roles; }
 
     public void setId(Long id) { this.id = id; }

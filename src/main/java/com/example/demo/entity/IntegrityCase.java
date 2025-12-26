@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "integrity_cases")
 public class IntegrityCase {
 
     @Id
@@ -19,8 +20,11 @@ public class IntegrityCase {
     private String courseCode;
     private String instructorName;
     private String description;
+
     private String status = "OPEN";
+
     private LocalDate incidentDate;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "integrityCase")
@@ -28,11 +32,12 @@ public class IntegrityCase {
 
     // getters & setters
     public Long getId() { return id; }
-    public String getStatus() { return status; }
     public StudentProfile getStudentProfile() { return studentProfile; }
+    public String getStatus() { return status; }
+    public LocalDate getIncidentDate() { return incidentDate; }
     public List<PenaltyAction> getPenalties() { return penalties; }
 
     public void setId(Long id) { this.id = id; }
-    public void setStudentProfile(StudentProfile s) { this.studentProfile = s; }
+    public void setStudentProfile(StudentProfile studentProfile) { this.studentProfile = studentProfile; }
     public void setStatus(String status) { this.status = status; }
 }
