@@ -1,20 +1,19 @@
 package com.example.demo.servlet;
 
-import jakarta.servlet.*;
 import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet("/basic")
 public class BasicServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws IOException {
-        res.getWriter().write("GET OK");
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.getWriter().write("Servlet is running");
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse res)
-            throws IOException {
-        res.getWriter().write("POST OK");
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_CREATED);
+        resp.getWriter().write("Servlet POST handled");
     }
 }
