@@ -1,32 +1,21 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.EvidenceRecord;
+import com.example.demo.service.EvidenceRecordService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.ArrayList;
-
 @RestController
-@RequestMapping("/api/evidence")
+@RequestMapping("/evidence")
 public class EvidenceRecordController {
+
+    private final EvidenceRecordService service;
+
+    public EvidenceRecordController(EvidenceRecordService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public EvidenceRecord submit(@RequestBody EvidenceRecord record) {
-        return record;
-    }
-
-    @GetMapping("/case/{caseId}")
-    public List<EvidenceRecord> getByCase(@PathVariable Long caseId) {
-        return new ArrayList<>();
-    }
-
-    @GetMapping("/{id}")
-    public EvidenceRecord getById(@PathVariable Long id) {
-        return new EvidenceRecord();
-    }
-
-    @GetMapping
-    public List<EvidenceRecord> getAll() {
-        return new ArrayList<>();
+        return service.submitEvidence(record);
     }
 }

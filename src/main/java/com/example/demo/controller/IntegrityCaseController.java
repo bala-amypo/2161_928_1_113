@@ -5,6 +5,7 @@ import com.example.demo.service.IntegrityCaseService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cases")
@@ -17,18 +18,25 @@ public class IntegrityCaseController {
     }
 
     @PostMapping
-    public IntegrityCase create(@RequestBody IntegrityCase c) {
-        return service.createCase(c);
+    public IntegrityCase create(@RequestBody IntegrityCase integrityCase) {
+        return service.createCase(integrityCase);
     }
 
     @PutMapping("/{id}/status")
-    public IntegrityCase updateStatus(@PathVariable Long id,
-                                      @RequestParam String status) {
+    public IntegrityCase updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status
+    ) {
         return service.updateCaseStatus(id, status);
     }
 
-    @GetMapping("/student/{id}")
-    public List<IntegrityCase> byStudent(@PathVariable Long id) {
-        return service.getCasesByStudent(id);
+    @GetMapping("/student/{studentId}")
+    public List<IntegrityCase> getByStudent(@PathVariable Long studentId) {
+        return service.getCasesByStudent(studentId);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<IntegrityCase> getById(@PathVariable Long id) {
+        return service.getCaseById(id);
     }
 }

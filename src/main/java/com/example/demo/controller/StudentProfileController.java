@@ -8,30 +8,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/students")
-@CrossOrigin(origins = "*")
 public class StudentProfileController {
 
-    private final StudentProfileService studentService;
+    private final StudentProfileService service;
 
-    public StudentProfileController(StudentProfileService studentService) {
-        this.studentService = studentService;
+    public StudentProfileController(StudentProfileService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public StudentProfile save(@RequestBody StudentProfile student) {
-        return studentService.save(student);
+    public StudentProfile create(@RequestBody StudentProfile student) {
+        return service.createStudent(student);
+    }
+
+    @GetMapping("/{id}")
+    public StudentProfile getById(@PathVariable Long id) {
+        return service.getStudentById(id);
     }
 
     @GetMapping
     public List<StudentProfile> getAll() {
-        return studentService.getAll();
+        return service.getAllStudents();
     }
 
-    @PutMapping("/{id}/repeat")
-    public StudentProfile updateRepeat(
-            @PathVariable Long id,
-            @RequestParam boolean repeatOffender
-    ) {
-        return studentService.updateRepeatStatus(id, repeatOffender);
+    @PutMapping("/{id}/repeat-status")
+    public StudentProfile updateRepeatStatus(@PathVariable Long id) {
+        return service.updateRepeatOffenderStatus(id);
     }
 }
