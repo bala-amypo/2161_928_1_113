@@ -1,15 +1,8 @@
-// package com.example.demo.service;
-
-// import com.example.demo.entity.EvidenceRecord;
-
-// public interface EvidenceRecordService {
-
-//     EvidenceRecord submitEvidence(EvidenceRecord evidenceRecord);
-// }
 package com.example.demo.service;
 
 import com.example.demo.entity.EvidenceRecord;
 
 public interface EvidenceRecordService {
-    EvidenceRecord addEvidence(EvidenceRecord record);
+
+    EvidenceRecord submitEvidence(EvidenceRecord evidenceRecord);
 }
