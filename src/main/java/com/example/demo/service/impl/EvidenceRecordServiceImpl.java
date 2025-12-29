@@ -1,27 +1,48 @@
+// package com.example.demo.service.impl;
+
+// import com.example.demo.entity.*;
+// import com.example.demo.repository.*;
+// import com.example.demo.service.EvidenceRecordService;
+
+// public class EvidenceRecordServiceImpl implements EvidenceRecordService {
+
+//     private final EvidenceRecordRepository evidenceRepo;
+//     private final IntegrityCaseRepository caseRepo;
+
+//     public EvidenceRecordServiceImpl(
+//             EvidenceRecordRepository evidenceRepo,
+//             IntegrityCaseRepository caseRepo
+//     ) {
+//         this.evidenceRepo = evidenceRepo;
+//         this.caseRepo = caseRepo;
+//     }
+
+//     @Override
+//     public EvidenceRecord submitEvidence(EvidenceRecord record) {
+//         caseRepo.findById(record.getIntegrityCase().getId())
+//                 .orElseThrow(() -> new IllegalArgumentException("Case not found"));
+
+//         return evidenceRepo.save(record);
+//     }
+// }
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.EvidenceRecord;
+import com.example.demo.repository.EvidenceRecordRepository;
 import com.example.demo.service.EvidenceRecordService;
+import org.springframework.stereotype.Service;
 
+@Service   // 🔥 THIS IS THE KEY
 public class EvidenceRecordServiceImpl implements EvidenceRecordService {
 
-    private final EvidenceRecordRepository evidenceRepo;
-    private final IntegrityCaseRepository caseRepo;
+    private final EvidenceRecordRepository repository;
 
-    public EvidenceRecordServiceImpl(
-            EvidenceRecordRepository evidenceRepo,
-            IntegrityCaseRepository caseRepo
-    ) {
-        this.evidenceRepo = evidenceRepo;
-        this.caseRepo = caseRepo;
+    public EvidenceRecordServiceImpl(EvidenceRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public EvidenceRecord submitEvidence(EvidenceRecord record) {
-        caseRepo.findById(record.getIntegrityCase().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Case not found"));
-
-        return evidenceRepo.save(record);
+    public EvidenceRecord addEvidence(EvidenceRecord record) {
+        return repository.save(record);
     }
 }
