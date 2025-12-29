@@ -20,7 +20,7 @@ public class SwaggerConfig {
 
             
             .servers(List.of(
-                new Server().url("https://9169.408procr.amypo.ai/")
+                new Server().url("https://9175.408procr.amypo.ai/")
             ))
 
             
